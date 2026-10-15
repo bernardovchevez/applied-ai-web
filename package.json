@@ -10,6 +10,7 @@
     "build:stage": "NEXT_PUBLIC_APP_ENV=stage next build",
     "build:prod": "NEXT_PUBLIC_APP_ENV=production next build",
     "build:standalone": "NEXT_BUILD_STANDALONE=true next build",
+    "typecheck": "tsc --noEmit",
     "start": "next start"
   },
   "dependencies": {

@@ -20,7 +20,7 @@ function ScoreTable({
     return (
       <section className="card">
         <h2>{title}</h2>
-        <p className="muted">No results file yet — run the eval script below to populate.</p>
+        <p className="muted">No results file yet. Run the eval script below to populate.</p>
       </section>
     );
   }
@@ -42,7 +42,7 @@ function ScoreTable({
               <td><code>{row.backend}</code></td>
               <td>{row.passed}</td>
               <td>{row.total}</td>
-              <td className="muted">{row.note ?? "—"}</td>
+              <td className="muted">{row.note ?? "-"}</td>
             </tr>
           ))}
         </tbody>
@@ -128,7 +128,7 @@ export function EvalsPanel() {
 
       <section className="card">
         <h2>Refresh data</h2>
-        <p className="muted">The dashboard reads JSON artifacts from disk — it does not run evals itself.</p>
+        <p className="muted">The dashboard reads JSON artifacts from disk; it does not run evals itself.</p>
         <pre className="draft">{`./platform/ops/run_rag_keyword_baseline.sh
 # optional cloud judge (needs OPENAI_API_KEY):
 # ./platform/ops/run_rag_ragas_mlflow.sh

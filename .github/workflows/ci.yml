@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  typecheck-and-build:
+    name: Node 22 · Typecheck & Next.js Build
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_APP_ENV: production
+      NEXT_PUBLIC_BFF_URL: https://api.example-media.com
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Production Next.js build (standalone)
+        run: npm run build:standalone

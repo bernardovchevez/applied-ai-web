@@ -95,7 +95,7 @@ export function AgentPanel() {
           <h2>Awaiting approval</h2>
           <p className="muted">{paused.message}</p>
           {paused.prompt ? <p><strong>Prompt:</strong> {paused.prompt}</p> : null}
-          <p className="muted">Draft output (unchanged if you approve — approval records publish consent):</p>
+          <p className="muted">Draft output (unchanged if you approve; approval records publish consent):</p>
           <pre className="draft">{paused.proposed_output}</pre>
           {paused.sources?.length ? <CitationList sources={paused.sources} /> : null}
           <ToolTrace trace={paused.tool_trace ?? []} />
@@ -110,10 +110,10 @@ export function AgentPanel() {
         <section className={`card ${result.status === "approved" ? "approved" : result.status === "rejected" ? "rejected" : ""}`}>
           <h2>{resultTitle}</h2>
           {result.status === "approved" ? (
-            <p className="alert ok">Human approval recorded — draft published to workflow.</p>
+            <p className="alert ok">Human approval recorded: draft published to workflow.</p>
           ) : null}
           {result.status === "rejected" ? (
-            <p className="alert err">Draft discarded — not published.</p>
+            <p className="alert err">Draft discarded (not published).</p>
           ) : null}
           {result.answer ? <pre className="draft">{result.answer}</pre> : null}
           {result.sources?.length ? <CitationList sources={result.sources} /> : null}

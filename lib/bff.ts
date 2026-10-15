@@ -68,7 +68,7 @@ function frameToStreamEvent(frame: SseFrame): ChatStreamEvent | null {
         sources: parseJsonData<SourceCitation[]>(frame.data.trim(), "sources event"),
       };
     case "token":
-      // Preserve leading/trailing spaces — Ollama tokens often start with a space.
+      // Preserve leading/trailing spaces; Ollama tokens often start with a space.
       return { type: "token", text: frame.data };
     case "done":
       return { type: "done", payload: parseJsonData(frame.data.trim(), "done event") };
@@ -117,7 +117,7 @@ export async function fetchHealth(): Promise<HealthReport> {
   } catch {
     throw new Error(`Health check failed (${res.status})`);
   }
-  // 503 = BFF up but pgvector/LLM degraded — still a valid health payload.
+  // 503 = BFF up but pgvector/LLM degraded, still a valid health payload.
   if (!res.ok && res.status !== 503) {
     throw new Error(`Health check failed (${res.status})`);
   }
