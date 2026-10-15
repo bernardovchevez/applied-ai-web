@@ -90,7 +90,7 @@ export function ChatPanel() {
   return (
     <div className="panel chat-panel">
       <h1>RAG Chat</h1>
-      <p className="lede">Streaming answers with pgvector citations · feedback → BFF SQLite</p>
+      <p className="lede">Streaming answers with pgvector citations · feedback to BFF state store</p>
       {error ? <div className="alert err">{error}</div> : null}
 
       <div className="messages">

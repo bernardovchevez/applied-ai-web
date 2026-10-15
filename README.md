@@ -13,7 +13,7 @@ workspace/
 
 | Route | BFF endpoint | Purpose |
 |-------|--------------|---------|
-| `/` Chat | `POST /v1/chat/stream` (SSE) | Grounded streaming RAG chat with source attribution and user feedback |
+| `/` | `POST /v1/chat/stream` (SSE), `POST /v1/feedback` | Grounded streaming RAG chat with source attribution (`doc_type`, `rights_tier`) and user feedback |
 | `/agent` | `POST /v1/agent/run` | Multi-agent production workflow with human-in-the-loop approve/reject gate |
 | `/admin/evals` | `GET /v1/evals/summary` | Evaluation dashboard across RAG backends and agent scenarios |
 
