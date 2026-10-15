@@ -1,5 +1,7 @@
 # applied-ai-web
 
+[![CI](https://github.com/bernardovchevez/applied-ai-web/actions/workflows/ci.yml/badge.svg)](https://github.com/bernardovchevez/applied-ai-web/actions/workflows/ci.yml)
+
 Next.js presentation client for the Applied AI Platform (`applied-ai-platform`). Communicates exclusively with the FastAPI presentation BFF over HTTP and Server-Sent Events (SSE).
 
 ```
@@ -77,6 +79,15 @@ docker build \
   --build-arg NEXT_PUBLIC_BFF_URL=https://api.example-media.com \
   -t applied-ai-web:prod .
 docker run -p 3000:3000 applied-ai-web:prod
+```
+
+## Typecheck & Continuous Integration
+
+GitHub Actions (`.github/workflows/ci.yml`) runs TypeScript validation and a standalone production build on Node 22 on every push and pull request to `main`:
+
+```bash
+npm run typecheck          # tsc --noEmit
+npm run build:standalone   # NEXT_BUILD_STANDALONE=true next build
 ```
 
 ## Architecture contract
