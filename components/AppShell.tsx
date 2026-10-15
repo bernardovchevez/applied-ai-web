@@ -1,11 +1,12 @@
 import Link from "next/link";
 
-import { BFF_URL } from "@/lib/bff";
-import type { BffStatus } from "@/lib/types";
+import { APP_ENV, BFF_URL } from "@/lib/bff";
+import type { AppEnvironment, BffStatus } from "@/lib/types";
 
 type Props = {
   children: React.ReactNode;
   bffStatus?: BffStatus;
+  environment?: AppEnvironment;
 };
 
 const NAV = [
@@ -15,13 +16,13 @@ const NAV = [
 ];
 
 const STATUS_LABEL: Record<BffStatus, string> = {
-  loading: "…",
+  loading: "...",
   online: "BFF online",
   degraded: "BFF degraded (pgvector/LLM)",
   offline: "BFF offline",
 };
 
-export function AppShell({ children, bffStatus = "loading" }: Props) {
+export function AppShell({ children, bffStatus = "loading", environment = APP_ENV }: Props) {
   const dotClass =
     bffStatus === "online" ? "ok" : bffStatus === "degraded" ? "warn" : bffStatus === "offline" ? "bad" : "";
 
@@ -40,6 +41,7 @@ export function AppShell({ children, bffStatus = "loading" }: Props) {
           ))}
         </nav>
         <div className="bff-pill">
+          <span className={`env-badge env-${environment}`}>{environment}</span>
           <span className={`dot ${dotClass}`} />
           {STATUS_LABEL[bffStatus]}
           <span className="bff-url">{BFF_URL}</span>

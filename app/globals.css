@@ -27,8 +27,20 @@ code, pre { font-family: "IBM Plex Mono", monospace; }
 .nav { display: flex; gap: 0.35rem; flex: 1; }
 .nav-link { color: var(--muted); text-decoration: none; padding: 0.35rem 0.65rem; border-radius: 6px; font-size: 0.9rem; }
 .nav-link:hover { color: var(--text); background: var(--accent-dim); }
-.bff-pill { font-size: 0.75rem; color: var(--muted); display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+.bff-pill { font-size: 0.75rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
 .bff-url { opacity: 0.7; word-break: break-all; }
+.env-badge {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.12rem 0.42rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.env-badge.env-stage { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.env-badge.env-production { border-color: var(--ok); color: var(--ok); background: color-mix(in srgb, var(--ok) 12%, transparent); }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); display: inline-block; }
 .dot.ok { background: var(--ok); }
 .dot.warn { background: var(--accent); }

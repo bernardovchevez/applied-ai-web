@@ -76,9 +76,13 @@ export type EvalSummary = {
   sources?: Record<string, string> | null;
 };
 
+export type AppEnvironment = "localhost" | "stage" | "production";
+
 export type HealthReport = {
   status: "ok" | "degraded";
   version: string;
+  environment?: AppEnvironment;
+  state_store?: "sqlite" | "postgres";
   pgvector: { status: string; chunk_count?: number; document_count?: number; error?: string };
   llm: { provider: string; status: string; error?: string };
 };

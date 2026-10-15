@@ -1,19 +1,38 @@
 import type {
   AgentPausedResponse,
   AgentRunResponse,
+  AppEnvironment,
   ChatStreamEvent,
   EvalSummary,
   HealthReport,
   SourceCitation,
 } from "./types";
 
+function normalizeEnv(raw: string | undefined): AppEnvironment {
+  const val = (raw ?? "").trim().toLowerCase();
+  if (val === "stage" || val === "staging") return "stage";
+  if (val === "prod" || val === "production") return "production";
+  return "localhost";
+}
+
+export const APP_ENV: AppEnvironment = normalizeEnv(process.env.NEXT_PUBLIC_APP_ENV);
+
 export const BFF_URL =
   process.env.NEXT_PUBLIC_BFF_URL?.replace(/\/$/, "") ?? "http://localhost:8000";
 
-const CLIENT_HEADERS = {
-  "Content-Type": "application/json",
-  "X-Client-Platform": "web",
-} as const;
+const BFF_API_KEY = process.env.NEXT_PUBLIC_BFF_API_KEY?.trim() ?? "";
+
+function buildClientHeaders(extra?: Record<string, string>): Record<string, string> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "X-Client-Platform": "web",
+    ...extra,
+  };
+  if (BFF_API_KEY) {
+    headers["Authorization"] = `Bearer ${BFF_API_KEY}`;
+  }
+  return headers;
+}
 
 type SseFrame = { event: string; data: string };
 
@@ -113,7 +132,7 @@ export async function* streamChat(
   try {
     response = await fetch(`${BFF_URL}/v1/chat/stream`, {
       method: "POST",
-      headers: { ...CLIENT_HEADERS, "X-Session-Id": sessionId },
+      headers: buildClientHeaders({ "X-Session-Id": sessionId }),
       body: JSON.stringify({ question }),
     });
   } catch (err) {
@@ -172,7 +191,7 @@ export async function submitFeedback(input: {
 }): Promise<void> {
   const res = await fetch(`${BFF_URL}/v1/feedback`, {
     method: "POST",
-    headers: CLIENT_HEADERS,
+    headers: buildClientHeaders(),
     body: JSON.stringify({
       session_id: input.sessionId,
       prompt: input.prompt,
@@ -189,11 +208,11 @@ export async function runAgent(input: {
   autoApprove?: boolean;
   sessionId?: string;
 }): Promise<AgentRunResponse | AgentPausedResponse> {
-  const headers: Record<string, string> = { ...CLIENT_HEADERS };
-  if (input.sessionId) headers["X-Session-Id"] = input.sessionId;
+  const extra: Record<string, string> = {};
+  if (input.sessionId) extra["X-Session-Id"] = input.sessionId;
   const res = await fetch(`${BFF_URL}/v1/agent/run`, {
     method: "POST",
-    headers,
+    headers: buildClientHeaders(extra),
     body: JSON.stringify({ prompt: input.prompt, auto_approve: input.autoApprove ?? false }),
   });
   const body = await parseJsonResponse(res);
@@ -209,7 +228,7 @@ export async function resumeAgent(input: {
 }): Promise<AgentRunResponse> {
   const res = await fetch(`${BFF_URL}/v1/agent/run`, {
     method: "POST",
-    headers: { ...CLIENT_HEADERS, "X-Session-Id": input.threadId },
+    headers: buildClientHeaders({ "X-Session-Id": input.threadId }),
     body: JSON.stringify({ thread_id: input.threadId, resume: input.resume }),
   });
   const body = await parseJsonResponse(res);
@@ -239,7 +258,9 @@ async function parseJsonResponse(res: Response): Promise<Record<string, unknown>
 }
 
 export async function fetchEvalSummary(): Promise<EvalSummary> {
-  const res = await fetch(`${BFF_URL}/v1/evals/summary`);
+  const res = await fetch(`${BFF_URL}/v1/evals/summary`, {
+    headers: buildClientHeaders(),
+  });
   if (!res.ok) throw new Error((await res.text()) || `Evals failed (${res.status})`);
   return res.json() as Promise<EvalSummary>;
 }

@@ -44,11 +44,40 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-## Environment
+## Environments (Localhost, Stage & Production)
 
 | Variable | Default | Description |
 |----------|---------|-------------|
+| `NEXT_PUBLIC_APP_ENV` | `localhost` | Runtime environment badge and mode (`localhost`, `stage`, `production`) |
 | `NEXT_PUBLIC_BFF_URL` | `http://localhost:8000` | FastAPI BFF base URL |
+| `NEXT_PUBLIC_BFF_API_KEY` | *(empty)* | Optional Bearer API key when `BFF_API_KEY` is set on the BFF (`stage` / `production`) |
+
+Environment templates included in this repo:
+- `.env.local.example` / `.env.localhost.example` (points to `http://localhost:8000`)
+- `.env.stage.example` (points to stage BFF with `NEXT_PUBLIC_APP_ENV=stage`)
+- `.env.production.example` (points to production BFF with `NEXT_PUBLIC_APP_ENV=production`)
+
+### Build & Run by Environment
+
+```bash
+# Localhost dev
+npm run dev
+
+# Stage build
+cp .env.stage.example .env.stage
+npm run build:stage
+
+# Production build (Vercel or standard Node server)
+cp .env.production.example .env.production
+npm run build:prod && npm run start
+
+# Docker standalone production build
+docker build \
+  --build-arg NEXT_PUBLIC_APP_ENV=production \
+  --build-arg NEXT_PUBLIC_BFF_URL=https://api.example-media.com \
+  -t applied-ai-web:prod .
+docker run -p 3000:3000 applied-ai-web:prod
+```
 
 ## Architecture contract
 
