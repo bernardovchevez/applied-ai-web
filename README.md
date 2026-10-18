@@ -6,8 +6,9 @@ Next.js presentation client for the Applied AI Platform (`applied-ai-platform`).
 
 ```
 workspace/
-├── applied-ai-platform/              <- Platform (RAG, MCP server, LangGraph agents, pgvector, FastAPI BFF)
+├── applied-ai-platform/              <- RAG, agents, pgvector, embed worker, FastAPI BFF
 │   └── platform/bff/
+├── applied-ai-docs/                  <- Document catalog (SoT) → publish → lake + index events
 ├── applied-ai-web/                   <- Next.js browser client (this repository)
 └── applied-ai-slack/                 <- Slack Bolt client (X-Client-Platform: slack)
 ```
@@ -19,6 +20,7 @@ All clients share the same OpenAPI contract (`applied-ai-platform/platform/bff/o
 | Repository | Client surface | Header |
 |------------|----------------|--------|
 | [applied-ai-platform](https://github.com/bernardovchevez/applied-ai-platform) | FastAPI BFF, RAG, agents, MCP | (server) |
+| [applied-ai-docs](https://github.com/bernardovchevez/applied-ai-docs) | Catalog UI, publish to lake, ingest events | (catalog) |
 | [applied-ai-web](https://github.com/bernardovchevez/applied-ai-web) | Next.js (`/`, `/agent`, `/admin/evals`) | `X-Client-Platform: web` |
 | [applied-ai-slack](https://github.com/bernardovchevez/applied-ai-slack) | Slash commands, `@media-ops`, Block Kit approvals | `X-Client-Platform: slack` |
 
@@ -36,19 +38,28 @@ All routes check `GET /health` for live platform status.
 
 ## Prerequisites
 
-1. **FastAPI BFF** running from `applied-ai-platform`:
+Documents are **not** edited in this repo. [applied-ai-docs](https://github.com/bernardovchevez/applied-ai-docs) owns the catalog; **Publish** writes `applied-ai-platform/data/lake/raw/` and events for the embed worker. Full walkthrough: [applied-ai-docs/docs/localhost-setup.md](https://github.com/bernardovchevez/applied-ai-docs/blob/main/docs/localhost-setup.md).
+
+1. **Platform:** Postgres/pgvector, Ollama (or OpenAI), **FastAPI BFF** on port 8000:
 
 ```bash
 cd applied-ai-platform
 source .venv/bin/activate
 pip install -r platform/bff/requirements-bff.txt
-cd platform/bff
-uvicorn main:app --reload --port 8000
+cd platform/bff && ./run.sh --env localhost
 ```
 
-2. Platform dependencies: Docker `pgvector`, Ollama (or OpenAI API key), and ingested synthetic corpus (see `applied-ai-platform/README.md`).
+2. **Document catalog** (sibling checkout): import seed → publish → index:
 
-## Setup
+```bash
+cd applied-ai-docs
+cp .env.localhost.example .env.localhost
+./run.sh
+# UI: Import seed library → Publish all pending (optional: run embed worker)
+# Or: cd ../applied-ai-platform && python platform/pipelines/embed_worker.py
+```
+
+3. **This client** (after `curl -s http://localhost:8000/health` succeeds):
 
 ```bash
 cd applied-ai-web
@@ -105,7 +116,7 @@ npm run build:standalone   # NEXT_BUILD_STANDALONE=true next build
 
 ## Local demo prompts (web UI)
 
-With the BFF and ingested Harbor Line corpus running, try these on **`/`** (chat) and **`/agent`** (clearance workflow):
+With the BFF running and the Harbor Line corpus **published and embedded** from applied-ai-docs, try these on **`/`** (chat) and **`/agent`** (clearance workflow):
 
 **Chat (RAG):**
 
