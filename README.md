@@ -24,8 +24,6 @@ All clients share the same OpenAPI contract (`applied-ai-platform/platform/bff/o
 | [applied-ai-web](https://github.com/bernardovchevez/applied-ai-web) | Next.js (`/`, `/agent`, `/admin/evals`) | `X-Client-Platform: web` |
 | [applied-ai-slack](https://github.com/bernardovchevez/applied-ai-slack) | Slash commands, `@media-ops`, Block Kit approvals | `X-Client-Platform: slack` |
 
-Sample prompts for localhost demos (Slack slash commands and equivalent web chat questions): [applied-ai-slack/docs/local-slack-testing.md#sample-prompts-for-localhost-demos](https://github.com/bernardovchevez/applied-ai-slack/blob/main/docs/local-slack-testing.md#sample-prompts-for-localhost-demos).
-
 ## Features
 
 | Route | BFF endpoint | Purpose |
@@ -113,23 +111,6 @@ GitHub Actions (`.github/workflows/ci.yml`) runs TypeScript validation and a sta
 npm run typecheck          # tsc --noEmit
 npm run build:standalone   # NEXT_BUILD_STANDALONE=true next build
 ```
-
-## Local demo prompts (web UI)
-
-With the BFF running and the Harbor Line corpus **published and embedded** from applied-ai-docs, try these on **`/`** (chat) and **`/agent`** (clearance workflow):
-
-**Chat (RAG):**
-
-- Is the theme song cleared for EMEA streaming?
-- Is the Getty archival footage for Harbor Line Episode 4 cleared?
-- What locations are locked for Season 1 Episode 4?
-
-**Agent (human approval gate):**
-
-- Prepare clearance summary for Harbor Line S01E04 EMEA launch
-- Draft production brief clearance summary for Harbor Line S02E01 EMEA SVOD
-
-More samples (including Slack command syntax): [applied-ai-slack/docs/local-slack-testing.md](https://github.com/bernardovchevez/applied-ai-slack/blob/main/docs/local-slack-testing.md#sample-prompts-for-localhost-demos).
 
 ## Architecture contract
 
